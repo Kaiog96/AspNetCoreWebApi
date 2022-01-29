@@ -15,45 +15,49 @@ using Microsoft.EntityFrameworkCore;
 
 namespace SmartSchool.WebAPI
 {
-    public class Startup
+  public class Startup
+  {
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-        
-        public void ConfigureServices(IServiceCollection services)
-        {
-
-            services.AddDbContext<SmartContext>(
-                 context => context.UseSqlite(Configuration.GetConnectionString("Default"))
-            );
-
-
-            services.AddControllers();
-           
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                
-            }
-
-            app.UseHttpsRedirection();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-        }
+      Configuration = configuration;
     }
+
+    public IConfiguration Configuration { get; }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+
+      services.AddDbContext<SmartContext>(
+           context => context.UseSqlite(Configuration.GetConnectionString("Default"))
+      );
+
+      services.AddScoped<IRepository, Repository>();
+
+      services.AddControllers()
+       .AddNewtonsoftJson(
+        opt => opt.SerializerSettings.ReferenceLoopHandling =
+        Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+      if (env.IsDevelopment())
+      {
+        app.UseDeveloperExceptionPage();
+
+      }
+
+      app.UseHttpsRedirection();
+
+      app.UseRouting();
+
+      app.UseAuthorization();
+
+      app.UseEndpoints(endpoints =>
+      {
+        endpoints.MapControllers();
+      });
+    }
+  }
 }
