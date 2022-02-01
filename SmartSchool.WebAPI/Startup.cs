@@ -31,11 +31,13 @@ namespace SmartSchool.WebAPI
     public void ConfigureServices(IServiceCollection services)
     {
 
-      services.AddDbContext<SmartContext>(
-           context => context.UseSqlite(Configuration.GetConnectionString("Default"))
-      );
 
-      services.AddControllers()
+
+            services.AddDbContext<SmartContext>(
+                      context => context.UseMySql(Configuration.GetConnectionString("Default"))
+            );
+
+            services.AddControllers()
       .AddNewtonsoftJson(
        opt => opt.SerializerSettings.ReferenceLoopHandling =
        Newtonsoft.Json.ReferenceLoopHandling.Ignore);
